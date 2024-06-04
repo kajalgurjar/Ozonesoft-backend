@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import contactUsModel from "../models/contactUs.model.js";
 import BannerModel from "../models/banner.model.js";
+import blogsModel from "../models/blogs.model.js";
 
 dotenv.config();
 
@@ -25,5 +26,5 @@ db.sequelize = sequelize;
 // Models-table
 db.contactData = contactUsModel(sequelize, Sequelize);
 db.bannerData = BannerModel(sequelize, Sequelize);
-
+db.blogsData = blogsModel(sequelize,Sequelize);
 export { db };

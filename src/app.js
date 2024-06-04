@@ -36,12 +36,14 @@ if (!fs.existsSync(bannersDir)) {
 }
 
 // Routes import
-import contactRouter from "./routes/contactUs.router.js"; // Ensure the path is correct
-import homeRouter from "./routes/home.router.js"; // Ensure the path is correct
+import contactRouter from "./routes/contactUs.router.js";
+import homeRouter from "./routes/home.router.js"; 
+import blogsRouter from "./routes/blogs.router.js"; // Fixed typo here
 
 // Routes declaration
 app.use("/api/contact", contactRouter);
 app.use("/api/home", homeRouter);
+app.use("/api/blogs", blogsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

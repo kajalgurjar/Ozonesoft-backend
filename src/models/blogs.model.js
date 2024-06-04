@@ -1,37 +1,43 @@
 import { DataTypes } from "sequelize";
 
 export default (sequelize) => {
-  const Contact = sequelize.define(
-    "contact",
+  const Blog = sequelize.define(
+    "blog",
     {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      image: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      mobileNumber: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      message: {
+      description: {
+        type: DataTypes.STRING(1000),
+        allowNull: false,
+      },
+      posted_By: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      meta_title: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      meta_description: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {
-      // Options object for the model
       timestamps: true,
     }
   );
 
-  return Contact;
+  return Blog;
 };
