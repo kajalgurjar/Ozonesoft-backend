@@ -28,7 +28,6 @@ export default (sequelize) => {
       },
     },
     {
-      // Options object for the model
       timestamps: true,
     }
   );

@@ -41,9 +41,9 @@ import homeRouter from "./routes/home.router.js";
 import blogsRouter from "./routes/blogs.router.js"; // Fixed typo here
 
 // Routes declaration
-app.use("/api/contact", contactRouter);
-app.use("/api/home", homeRouter);
-app.use("/api/blogs", blogsRouter);
+app.use("/api/v1/contact", contactRouter);
+app.use("/api/v1/home", homeRouter);
+app.use("/api/v1/blogs", blogsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

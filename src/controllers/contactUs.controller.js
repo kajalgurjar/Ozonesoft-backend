@@ -33,4 +33,20 @@ const postcontactUs = async (req, res) => {
   }
 };
 
-export { postcontactUs };
+const getContactUs = async (req, res) => {
+  try {
+    const contacts = await Contact.findAll();
+    
+    res.send(contacts);
+  } catch (error) {
+    // Log and handle the error
+    console.error("Error retrieving contacts:", error);
+    res.status(500).send({
+      message:
+        error.message || "Some error occurred while retrieving the contacts.",
+    });
+  }
+};
+
+
+export { postcontactUs,getContactUs };
