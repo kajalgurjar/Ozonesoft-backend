@@ -2,7 +2,7 @@ import { db } from "../db/db.config.js";
 
 const Banner = db.bannerData;
 
-
+//Post Data For The Banner 
 const postBannerData = async (req, res) => {
   try {
     const { title, description, link } = req.body;
@@ -39,13 +39,30 @@ const postBannerData = async (req, res) => {
   }
 };
 
+//get APi For The Banner 
+const getBannerData = async (req, res) => {
+  try {
+    const banners = await Banner.findAll();
+
+    res.send(banners);
+  } catch (error) {
+    // Log and handle the error
+    console.error("Error retrieving banners:", error);
+    res.status(500).send({
+      message: error.message || "Some error occurred while retrieving the banners.",
+    });
+  }
+};
+
+//get home screen data
 const getHomeScreenData = async (req, res) => {
   try {
-    const crouselData = await Crousel.findAll();
+    // const crouselData = await Crousel.findAll();
+    const bannerData = await Banner.findAll();
 
 
     const homedata = {
-      crouselData,
+      bannerData,
     };
 
     res.send({ homedata });
@@ -61,6 +78,7 @@ const getHomeScreenData = async (req, res) => {
 
 export {
   postBannerData,
+  getBannerData,
   getHomeScreenData,
 };
 

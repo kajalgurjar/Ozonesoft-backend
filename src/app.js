@@ -35,6 +35,11 @@ if (!fs.existsSync(bannersDir)) {
   fs.mkdirSync(bannersDir, { recursive: true });
 }
 
+// const blogsDir = path.join(uploadDir, "blogs");
+// if (!fs.existsSync(blogsDir)) {
+//   fs.mkdirSync(blogsDir, { recursive: true });
+// }
+
 // Routes import
 import contactRouter from "./routes/contactUs.router.js";
 import homeRouter from "./routes/home.router.js"; 
