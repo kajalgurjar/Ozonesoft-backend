@@ -1,6 +1,6 @@
 import { db } from "../db/db.config.js";
 import { ApiError } from "../utils/ApiError.js";
-// import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const BlogList = db.blogsData;
 
@@ -48,37 +48,30 @@ const getBlogs = async (req, res) => {
 const updateBlogs = async (req, res) => {
   try {
     const { id } = req.params;
-    const parsedId = id.replace(":", ""); // Remove any colon if present
-
-    const { title, description, posted_By, meta_title, meta_description } = req.body;
-    const blogImage = req.file;
-
-    // Log incoming data for debugging
-    console.log("Updating blog with ID:", parsedId);
-    console.log("Updated blog data:", { title, description, posted_By, meta_title, meta_description });
+    const { title, description, posted_By ,meta_title, meta_description} = req.body;
+    const image = req.file;
+    console.log(title, description , posted_By,meta_title, meta_description);
 
     let imagePath = "";
 
-    if (blogImage) {
-      imagePath = `/uploads/blog/${blogImage.filename}`;
+    if (image) {
+      imagePath = `/uploads/banners/${image.filename}`;
     }
 
-    const blog = await BlogList.findByPk(parsedId);
+    const blog = await BlogList.findByPk(id);
 
     if (!blog) {
       throw new ApiError(404, "Blog not found");
     }
 
-    // Update blog properties
-    if (title) blog.title = title;
-    if (description) blog.description = description;
-    if (posted_By) blog.posted_By = posted_By;
-    if (meta_title) blog.meta_title = meta_title;
-    if (meta_description) blog.meta_description = meta_description;
+    if (title) blog.title = title.toLowerCase();
+    if (description) blog.description = description.toLowerCase();
+    if (posted_By) blog.posted_By = posted_By.toLowerCase();
+    if(meta_title) blog.meta_title = meta_title.toLowerCase();
+    if(meta_description) blog.meta_description = meta_description.toLowerCase();
 
     if (imagePath) blog.image = imagePath;
 
-    // Save updated blog
     await blog.save();
 
     const updatedBlog = await BlogList.findOne({
@@ -86,7 +79,7 @@ const updateBlogs = async (req, res) => {
     });
 
     if (!updatedBlog) {
-      throw new ApiError(404, "Failed to retrieve updated blog data");
+      throw new ApiError(404, "Failed to retrieve updated admin data");
     }
 
     res
@@ -107,6 +100,7 @@ const updateBlogs = async (req, res) => {
     }
   }
 };
+
 
 //---------------------------------------------------------------
 const deleteBlogs = async (req, res) => {
@@ -135,12 +129,12 @@ const deleteBlogs = async (req, res) => {
     });
 
     console.log("Is deleted:", isDeleted); // Debugging log
-    
+
     if (!isDeleted) {
       throw new ApiError(500, "Facing some issue deleting this blog");
     }
 
-    res.status(200).json("Blog deleted successfully");
+    res.status(200).json(new ApiResponse(200, {}, "Blog deleted successfully"));
   } catch (error) {
     console.error("Error deleting blog:", error);
     if (error instanceof ApiError) {
