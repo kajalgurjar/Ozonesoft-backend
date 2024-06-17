@@ -32,7 +32,16 @@ const storage = multer.diskStorage({
   },
 });
 
-// Create multer instance with configured storage
-const upload = multer({ storage });
+// File filter for multer to accept only image and blog files
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.includes("image") || file.mimetype.includes("blog")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Unsupported file type"), false);
+  }
+};
+
+// Create multer instance with configured storage and filter
+const upload = multer({ storage, fileFilter });
 
 export { upload };
