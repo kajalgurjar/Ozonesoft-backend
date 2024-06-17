@@ -23,22 +23,22 @@ app.use(
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Ensure the uploads directory exists
+//Ensure the uploads directory exists
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Ensure the banners subdirectory exists
+//Ensure the banners subdirectory exists
 const bannersDir = path.join(uploadDir, "banners");
 if (!fs.existsSync(bannersDir)) {
   fs.mkdirSync(bannersDir, { recursive: true });
 }
 
-// const blogsDir = path.join(uploadDir, "blogs");
-// if (!fs.existsSync(blogsDir)) {
-//   fs.mkdirSync(blogsDir, { recursive: true });
-// }
+const blogsDir = path.join(uploadDir, "blogs");
+if (!fs.existsSync(blogsDir)) {
+  fs.mkdirSync(blogsDir, { recursive: true });
+}
 
 // Routes import
 import contactRouter from "./routes/contactUs.router.js";
