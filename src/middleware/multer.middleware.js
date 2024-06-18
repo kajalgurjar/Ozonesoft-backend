@@ -11,14 +11,14 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let uploadPath = path.join(__dirname, "..", "uploads");
 
-    // Determine the destination folder based on file type
-     if (file.fieldname === "image") {
-      uploadPath = path.join(uploadPath, "banners"); // Assuming it's for banner images
-    } else if (file.fieldname === "image") {
-      uploadPath = path.join(uploadPath, "blogs"); // Assuming it's for blog files
+    // Determine the destination folder based on the request URL
+    if (req.originalUrl.includes("postBlogs")) {
+      uploadPath = path.join(uploadPath, "blogs");
+    } else if (req.originalUrl.includes("postBanner")) {
+      uploadPath = path.join(uploadPath, "banners");
     } else {
-      console.error("Unsupported file fieldname:", file.fieldname); // Log unsupported fieldnames
-      return cb(new Error("Unsupported file type"), null);
+      console.error("Unsupported route for file upload:", req.originalUrl);
+      return cb(new Error("Unsupported route for file upload"), null);
     }
 
     // Ensure the destination directory exists
@@ -34,6 +34,15 @@ const storage = multer.diskStorage({
 });
 
 // Create multer instance with configured storage
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.includes("image")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Unsupported file type"), false);
+    }
+  }
+}).single('image'); // Only allow a single 'image' field
 
 export { upload };
