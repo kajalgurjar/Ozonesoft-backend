@@ -34,7 +34,6 @@ const postBlogsData = async (req, res) => {
     res.status(error.status || 500).send({ message: error.message || "Error creating blog" });
   }
 };
-
 //---------------------------------------------------------------
 const getBlogs = async (req, res) => {
   try {

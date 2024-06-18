@@ -12,11 +12,12 @@ const storage = multer.diskStorage({
     let uploadPath = path.join(__dirname, "..", "uploads");
 
     // Determine the destination folder based on file type
-    if (file.mimetype.includes("image")) {
-      uploadPath = path.join(uploadPath, "banners");
-    } else if (file.mimetype.includes("blog")) {
-      uploadPath = path.join(uploadPath, "blogs");
+     if (file.fieldname === "image") {
+      uploadPath = path.join(uploadPath, "banners"); // Assuming it's for banner images
+    } else if (file.fieldname === "image") {
+      uploadPath = path.join(uploadPath, "blogs"); // Assuming it's for blog files
     } else {
+      console.error("Unsupported file fieldname:", file.fieldname); // Log unsupported fieldnames
       return cb(new Error("Unsupported file type"), null);
     }
 
@@ -32,16 +33,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter for multer to accept only image and blog files
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.includes("image") || file.mimetype.includes("blog")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Unsupported file type"), false);
-  }
-};
-
-// Create multer instance with configured storage and filter
-const upload = multer({ storage, fileFilter });
+// Create multer instance with configured storage
+const upload = multer({ storage });
 
 export { upload };
