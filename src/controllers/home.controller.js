@@ -1,6 +1,21 @@
 import { db } from "../db/db.config.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { convert } from "html-to-text";
 
 const Banner = db.bannerData;
+const BlogList = db.blogsData;
+
+const stripHtml = (html) => {
+  return convert(html, {
+    wordwrap: 130,
+    selectors: [
+      { selector: "a", options: { ignoreHref: true } },
+      { selector: "img", format: "skip" },
+    ],
+  });
+};
 
 //Post Data For The Banner 
 const postBannerData = async (req, res) => {
@@ -59,10 +74,24 @@ const getHomeScreenData = async (req, res) => {
   try {
     // const crouselData = await Crousel.findAll();
     const bannerData = await Banner.findAll();
-
+    const blogDataRaw = await BlogList.findAll({
+      limit: 3,
+      order: [["createdAt", "DESC"]],
+    });
+  
+    const blogData = blogDataRaw.map((blog) => {
+      const plainTextDescription = stripHtml(blog.description || "");
+      return {
+        ...blog.toJSON(),
+        description:
+          plainTextDescription.substring(0, 50) +
+          (plainTextDescription.length > 50 ? "..." : ""),
+      };
+    });
 
     const homedata = {
       bannerData,
+      blogData,
     };
 
     res.send({ homedata });
@@ -76,12 +105,13 @@ const getHomeScreenData = async (req, res) => {
   }
 };
 
+// res
+//     .status(200)
+//     .json(new ApiResponse(200, { homedata }, "Home data fetched successfully"));
+
 export {
   postBannerData,
   getBannerData,
   getHomeScreenData,
+  
 };
-
-
-
-

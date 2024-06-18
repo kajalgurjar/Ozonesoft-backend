@@ -4,6 +4,7 @@ import {
   postBannerData,
   getHomeScreenData,
   getBannerData
+  
 } from "../controllers/home.controller.js";
 
 import { upload } from "../middleware/multer.middleware.js";
@@ -26,5 +27,6 @@ router.post("/postBanner", (req, res, next) => {
 
 router.get("/getBanner", getBannerData);
 router.get("/homeData", getHomeScreenData);
+
 
 export default router;
