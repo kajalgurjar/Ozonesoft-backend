@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import contactUsModel from "../models/contactUs.model.js";
 import BannerModel from "../models/banner.model.js";
 import blogsModel from "../models/blogs.model.js";
+import newslatterModel from "../models/newslatter.model.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ db.sequelize = sequelize;
 db.contactData = contactUsModel(sequelize, Sequelize);
 db.bannerData = BannerModel(sequelize, Sequelize);
 db.blogsData = blogsModel(sequelize,Sequelize);
-// db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
+db.newslatterData = newslatterModel(sequelize, Sequelize);
+db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
 
 export { db };

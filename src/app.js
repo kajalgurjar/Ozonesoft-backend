@@ -43,12 +43,14 @@ if (!fs.existsSync(blogsDir)) {
 // Routes import
 import contactRouter from "./routes/contactUs.router.js";
 import homeRouter from "./routes/home.router.js"; 
-import blogsRouter from "./routes/blogs.router.js"; // Fixed typo here
+import blogsRouter from "./routes/blogs.router.js";
+import newslatterRouter from "./routes/newslatter.router.js"
 
 // Routes declaration
 app.use("/api/v1/contact", contactRouter);
 app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/blogs", blogsRouter);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
