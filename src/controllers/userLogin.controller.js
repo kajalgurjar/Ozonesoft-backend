@@ -60,7 +60,6 @@ export const logoutController = asyncHandler(async (req, res) => {
 });
 
 // Function to generate a random 4-digit OTP
-
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000);
 
 const createTransporter = () => {
@@ -89,7 +88,7 @@ const sendOTPByEmail = async (email, otp) => {
 
     console.log("Email sent successfully");
 
-    // Optionally handle OTP expiry logic here
+    // OTP expiry logic 
     setTimeout(() => {
       console.log("OTP has expired after 2 minutes");
     }, 2 * 60 * 1000); // 2 minutes in milliseconds
