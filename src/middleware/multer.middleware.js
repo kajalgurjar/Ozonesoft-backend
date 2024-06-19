@@ -65,23 +65,16 @@ const __dirname = path.dirname(__filename);
 // Promisify fs methods
 const unlinkAsync = promisify(fs.unlink);
 const renameAsync = promisify(fs.rename);
-
-// Storage configuration for various types of files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (file.fieldname === "thumbnail" && file.mimetype.includes("image")) {
-      cb(null, path.join(__dirname, "..", "uploads", "resources", "videos"));
-    } else if (file.fieldname === "image" && file.mimetype.includes("image")) {
-      cb(null, path.join(__dirname, "..", "uploads", "resources", "images"));
-    } else if (file.mimetype.includes("pdf")) {
-      cb(null, path.join(__dirname, "..", "uploads", "resources", "pdfs"));
-    } else if (
-      file.fieldname === "gallery_img" &&
-      file.mimetype.includes("image")
-    ) {
-      cb(null, path.join(__dirname, "..", "uploads", "gallery"));
+    if (req.originalUrl.includes("postBlogs")) {
+      if (file.fieldname === "gallery_img" && file.mimetype.includes("image")) {
+        cb(null, path.join(__dirname, "..", "uploads", "gallery"));
+      } else {
+        cb(new Error("Unsupported file type"), null);
+      }
     } else {
-      cb(new Error("Unsupported file type"), null);
+      cb(new Error("Unsupported request URL"), null);
     }
   },
   filename: function (req, file, cb) {
@@ -115,32 +108,6 @@ const profileStorage = multer.diskStorage({
   },
 });
 
-const testimonialStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "image" && file.mimetype.includes("image")) {
-      cb(null, path.join(__dirname, "..", "uploads", "testimonial"));
-    } else {
-      cb(new Error("Unsupported file type"), null);
-    }
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const newsAndUpdateStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "image" && file.mimetype.includes("image")) {
-      cb(null, path.join(__dirname, "..", "uploads", "newsandupdate"));
-    } else {
-      cb(new Error("Unsupported file type"), null);
-    }
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
 const blogStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === "image" && file.mimetype.includes("image")) {
@@ -157,8 +124,6 @@ const blogStorage = multer.diskStorage({
 const upload = multer({ storage });
 const bannerUpload = multer({ storage: bannerStorage });
 const profileUpload = multer({ storage: profileStorage });
-const testimonialUpload = multer({ storage: testimonialStorage });
-const newsAndUpdateUpload = multer({ storage: newsAndUpdateStorage });
 const blogUpload = multer({ storage: blogStorage });
 
 const compressImage = async (file) => {
@@ -202,8 +167,6 @@ export {
   upload,
   bannerUpload,
   profileUpload,
-  newsAndUpdateUpload,
-  testimonialUpload,
   blogUpload,
   imageCompressionMiddleware,
 };
