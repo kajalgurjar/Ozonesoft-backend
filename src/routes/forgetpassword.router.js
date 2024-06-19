@@ -6,7 +6,7 @@ import {
   verifyOtp,
   verifyToken,
   updateNewPassword,
-} from "../controller/forgetpassword.controller.js";
+} from "../controllers/forgetpassword.controller.js";
 
 
 const router = Router();

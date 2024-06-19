@@ -45,6 +45,9 @@ import contactRouter from "./routes/contactUs.router.js";
 import homeRouter from "./routes/home.router.js"; 
 import blogsRouter from "./routes/blogs.router.js";
 import newslatterRouter from "./routes/newslatter.router.js";
+import userRouter from "./routes/user.router.js"
+import adminRouter from "./routes/admin.router.js"
+import forgetPasswordRouter from "./routes/forgetpassword.router.js"
 import { verifyJWT } from "./middleware/auth.middleware.js";
 
 // Routes declaration
@@ -52,6 +55,10 @@ app.use('/api/v1/contact', contactRouter);
 app.use('/api/v1/home', homeRouter); // Assuming home doesn't require auth
 app.use('/api/v1/blogs', blogsRouter);
 app.use('/api/v1/newsletter', newslatterRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/", adminRouter);
+app.use("/", forgetPasswordRouter);
+app.use("/" , adminRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
