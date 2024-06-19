@@ -29,6 +29,6 @@ db.contactData = contactUsModel(sequelize, Sequelize);
 db.bannerData = BannerModel(sequelize, Sequelize);
 db.blogsData = blogsModel(sequelize,Sequelize);
 db.newslatterData = newslatterModel(sequelize, Sequelize);
-db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
+// db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
 
 export { db };
