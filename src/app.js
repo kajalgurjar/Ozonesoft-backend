@@ -48,10 +48,10 @@ import newslatterRouter from "./routes/newslatter.router.js";
 import { verifyJWT } from "./middleware/auth.middleware.js";
 
 // Routes declaration
-app.use('/api/v1/contact', verifyJWT, contactRouter);
+app.use('/api/v1/contact', contactRouter);
 app.use('/api/v1/home', homeRouter); // Assuming home doesn't require auth
-app.use('/api/v1/blogs', verifyJWT, blogsRouter);
-app.use('/api/v1/newsletter', verifyJWT, newslatterRouter);
+app.use('/api/v1/blogs', blogsRouter);
+app.use('/api/v1/newsletter', newslatterRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

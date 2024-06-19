@@ -4,7 +4,7 @@ import contactUsModel from "../models/contactUs.model.js";
 import BannerModel from "../models/banner.model.js";
 import blogsModel from "../models/blogs.model.js";
 import newslatterModel from "../models/newslatter.model.js";
-
+import adminModel from "../models/admin.model.js";
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -29,6 +29,7 @@ db.contactData = contactUsModel(sequelize, Sequelize);
 db.bannerData = BannerModel(sequelize, Sequelize);
 db.blogsData = blogsModel(sequelize,Sequelize);
 db.newslatterData = newslatterModel(sequelize, Sequelize);
+db.adminData = adminModel(sequelize, Sequelize);
 // db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
 
 export { db };
