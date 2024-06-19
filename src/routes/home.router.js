@@ -8,6 +8,8 @@ import {
 } from "../controllers/home.controller.js";
 
 import { upload } from "../middleware/multer.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import verifyAPIKey from "../middleware/verifyAPIKey.js";
 
 const router = Router();
 
@@ -25,8 +27,8 @@ router.post("/postBanner", (req, res, next) => {
   });
 });
 
-router.get("/getBanner", getBannerData);
-router.get("/homeData", getHomeScreenData);
+router.get("/getBanner",verifyAPIKey,getBannerData);
+router.get("/homeData", verifyAPIKey, getHomeScreenData);
 
 
 export default router;
