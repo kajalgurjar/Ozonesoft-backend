@@ -6,7 +6,7 @@ import {
   deleteBlogs,
   updateBlogs,
 } from "../controllers/blogs.controller.js";
-
+import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
@@ -25,8 +25,8 @@ router.post("/postBlogs", (req, res, next) => {
   });
 });
 
-router.get("/getBlogs", getBlogs);
-router.put("/blogs/:id", updateBlogs);
-router.delete('/blogs/:id', deleteBlogs);
+router.get("/getBlogs", verifyJWT, getBlogs);
+router.put("/blogs/:id", verifyJWT, updateBlogs);
+router.delete('/blogs/:id', verifyJWT, deleteBlogs);
 
 export default router;
