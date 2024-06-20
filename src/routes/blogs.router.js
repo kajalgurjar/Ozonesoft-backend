@@ -25,8 +25,10 @@ router.post("/postBlogs", (req, res, next) => {
   });
 });
 
-router.get("/getBlogs", verifyJWT, getBlogs);
+router.get("/getBlogs", getBlogs);
 router.put("/blogs/:id", verifyJWT, updateBlogs);
 router.delete('/blogs/:id', verifyJWT, deleteBlogs);
 
 export default router;
+
+
