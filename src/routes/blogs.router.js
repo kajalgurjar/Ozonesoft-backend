@@ -25,10 +25,24 @@ router.post("/postBlogs", (req, res, next) => {
   });
 });
 
+// router.post("/postBlogs", upload.single("blogs"), (req, res, next) => {
+//   // Handle postBlogsData logic here
+//   try {
+//     // Assuming postBlogsData handles the logic to save blog data to the database
+//     postBlogsData(req, res, next);
+//   } catch (error) {
+//     // Handle any errors that occur during postBlogsData processing
+//     console.error("Error posting blogs:", error);
+//     res.status(500).json({ message: "Error posting blogs", error: error.message });
+//   }
+// });
+
 router.get("/getBlogs", getBlogs);
 router.put("/blogs/:id", verifyJWT, updateBlogs);
 router.delete('/blogs/:id', verifyJWT, deleteBlogs);
 
 export default router;
+
+
 
 

@@ -8,10 +8,12 @@ import {
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
-router.post("/postnewsletter", postNewsLetter);
+router.post("/postnewsletter", verifyJWT, postNewsLetter);
+ 
+router.get("/getAllNewsletter",  getNewsLetter);
 
-router.get("/getAllNewsletter", verifyJWT, getNewsLetter);
-
-router.get("/downloadExcel", verifyJWT, downloadNewsLetter);
+// router.get("/downloadExcel", verifyJWT, downloadNewsLetter);
 
 export default router;
+
+
