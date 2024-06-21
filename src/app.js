@@ -56,9 +56,9 @@ app.use('/api/v1/home', homeRouter); // Assuming home doesn't require auth
 app.use('/api/v1/blogs', blogsRouter);
 app.use('/api/v1/newsletter', newslatterRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/", adminRouter);
-app.use("/", forgetPasswordRouter);
-app.use("/" , adminRouter);
+app.use("/admin", adminRouter);
+app.use("/admin", forgetPasswordRouter);
+// app.use("/" , adminRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

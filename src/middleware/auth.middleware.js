@@ -7,6 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 export const verifyJWT = async (req, res, next) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
+    console.log(token);
 
     if (!token) {
       throw new ApiError(401, "Unauthorized token");
@@ -40,3 +41,4 @@ export const verifyJWT = async (req, res, next) => {
     next(new ApiError(401, error?.message || "Invalid Access Token"));
   }
 };
+

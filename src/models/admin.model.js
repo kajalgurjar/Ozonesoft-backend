@@ -1,10 +1,15 @@
-import { DataTypes } from "sequelize";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { DataTypes, Model } from 'sequelize';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export default (sequelize) => {
-  const Admin = sequelize.define(
-    "Admin",
+  class Admin extends Model {
+    static associate(models) {
+      // Define associations if needed
+    }
+  }
+
+  Admin.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -26,30 +31,31 @@ export default (sequelize) => {
       },
       role: {
         type: DataTypes.STRING, // Assuming role is a string
-        defaultValue: "admin",
+        defaultValue: 'admin',
       },
       number: {
         type: DataTypes.STRING, // Assuming number is a string
-        defaultValue: "111111111",
+        defaultValue: '111111111',
       },
       refreshToken: {
         type: DataTypes.STRING,
       },
       forgetToken: {
         type: DataTypes.STRING,
-        defaultValue: "",
+        defaultValue: '',
       },
       image: {
         type: DataTypes.STRING,
-        defaultValue: "",
+        defaultValue: '',
       },
       accessToken: {
         type: DataTypes.STRING,
       },
     },
     {
+      sequelize,
       timestamps: true,
-      tableName: "ADMIN", // Assuming table name is "ADMIN"
+      tableName: 'admin', // Adjust this to match your actual table name in the database
     }
   );
 
@@ -60,7 +66,7 @@ export default (sequelize) => {
   });
 
   Admin.beforeUpdate(async (admin) => {
-    if (admin.changed("password")) {
+    if (admin.changed('password')) {
       admin.password = await bcrypt.hash(admin.password, 10);
     }
   });
@@ -110,5 +116,5 @@ export default (sequelize) => {
     return { accessToken };
   };
 
-  return Admin; // Ensure to return Admin at the end of the function
+  return Admin;
 };

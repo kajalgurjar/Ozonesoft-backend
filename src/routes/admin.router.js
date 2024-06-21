@@ -3,7 +3,6 @@ import {
   loginAdmin,
   logoutAdmin,
   showProfile,
-  updateProfile,
   updatePassword,
   registerUser,
 } from "../controllers/admin.controller.js";
@@ -21,7 +20,7 @@ router.post("/logout", verifyJWT, logoutAdmin);
 //   profileUpload.single("image"),
 //   updateProfile
 // );
-router.get("/profile", verifyJWT, showProfile);
+// router.get("/profile", verifyJWT, showProfile);
 router.put("/update-password", verifyJWT, updatePassword);
 router.post("/signup", registerUser);
 

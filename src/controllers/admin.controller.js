@@ -1,20 +1,17 @@
-
 import Admin from "../models/admin.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import bcrypt from "bcrypt";
-
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { promisify } from "util";
+import { Op } from "sequelize";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const unlinkAsync = promisify(fs.unlink);
-
-import { Op } from "sequelize";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -23,10 +20,9 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  // Check if user with the same email or name already exists
   const existedUser = await Admin.findOne({
     where: {
-      [Op.or]: [{ name: name }, { email: email }],
+      [Op.or]: [{ name: name.toLowerCase() }, { email: email.toLowerCase() }],
     },
   });
 
@@ -34,16 +30,14 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already exists");
   }
 
-  // Create the user; password will be hashed by beforeCreate hook
   const user = await Admin.create({
     name: name.toLowerCase(),
     email: email.toLowerCase(),
-    password: password, // Raw password; will be hashed by beforeCreate
+    password,
   });
 
   const { refreshToken } = await user.generateAndSaveRefreshTokens();
 
-  // Find the created user again to exclude sensitive fields
   const createdUser = await Admin.findOne({
     where: { id: user.id },
     attributes: { exclude: ["password", "refreshToken"] },
@@ -58,8 +52,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
-// ---------------------------------------------------------------------------------
-
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -67,7 +59,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email and password are required");
   }
 
-  const admin = await Admin.findOne({ where: { email } });
+  const admin = await Admin.findOne({ where: { email: email.toLowerCase() } });
 
   if (!admin) {
     throw new ApiError(404, "Admin does not exist");
@@ -104,7 +96,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
     );
 });
 
-// Ensure other controller functions correctly refer to Admin model
 const logoutAdmin = asyncHandler(async (req, res) => {
   const adminId = req.admin.id;
 
@@ -129,37 +120,32 @@ const logoutAdmin = asyncHandler(async (req, res) => {
 });
 
 const updatePassword = asyncHandler(async (req, res, next) => {
-  try {
-    const { id } = req.admin; // Assuming `req.admin` contains the admin details
-    const { oldPassword, newPassword } = req.body;
+  const { id } = req.admin;
+  const { oldPassword, newPassword } = req.body;
 
-    if (!oldPassword || !newPassword) {
-      throw new ApiError(400, "Old password and new password are required");
-    }
-
-    const admin = await Admin.findByPk(id);
-
-    if (!admin) {
-      throw new ApiError(404, "Admin not found");
-    }
-
-    const isPasswordCorrect = await admin.isPasswordCorrect(oldPassword);
-
-    if (!isPasswordCorrect) {
-      throw new ApiError(401, "Current password is incorrect");
-    }
-
-    admin.password = newPassword; // This will trigger the beforeUpdate hook to hash the password
-    await admin.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Password changed successfully",
-    });
-  } catch (error) {
-    console.error("Error updating password:", error);
-    next(error);
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Old password and new password are required");
   }
+
+  const admin = await Admin.findByPk(id);
+
+  if (!admin) {
+    throw new ApiError(404, "Admin not found");
+  }
+
+  const isPasswordCorrect = await admin.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Current password is incorrect");
+  }
+
+  admin.password = newPassword;
+  await admin.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password changed successfully",
+  });
 });
 
 const showProfile = asyncHandler(async (req, res) => {
@@ -168,90 +154,64 @@ const showProfile = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, { data }, "Profile"));
 });
 
-
 const updateProfile = asyncHandler(async (req, res) => {
-  try {
-    const { id } = req.admin;
-    const { name, email, number } = req.body;
-    const image = req.file;
+  const { id } = req.admin;
+  const { name, email, number } = req.body;
+  const image = req.file;
 
-    let imagePath = "";
+  let imagePath = "";
 
-    // If a new image is uploaded, set imagePath to the new file path
-    if (image) {
-      imagePath = `/uploads/profile/${image.filename}`;
+  if (image) {
+    imagePath = `/uploads/profile/${image.filename}`;
 
-      // Delete the old profile image if it exists
-      if (req.admin.image) {
-        const fullOldImagePath = path.join(
-          __dirname,
-          "..",
-          "uploads",
-          "profile",
-          path.basename(req.admin.image)
-        );
-        await unlinkAsync(fullOldImagePath);
-      }
-    }
-
-    // Find the admin record in the database
-    const admin = await Admin.findByPk(id);
-
-    if (!admin) {
-      throw new ApiError(404, "Admin not found");
-    }
-
-    // Check if the provided email already exists in the database
-    if (email) {
-      const existingAdmin = await Admin.findOne({
-        where: { email: email.toLowerCase() },
-        attributes: ["id"],
-      });
-
-      if (existingAdmin && existingAdmin.id !== id) {
-        throw new ApiError(400, "Email already exists");
-      }
-    }
-
-    // Update admin details with new values if provided
-    if (name) admin.name = name.toLowerCase();
-    if (email) admin.email = email.toLowerCase();
-    if (number) admin.number = number;
-    if (imagePath) admin.image = imagePath;
-
-    // Save the updated admin details
-    await admin.save();
-
-    // Fetch the updated admin details for response
-    const updatedAdmin = await Admin.findOne({
-      where: { id: admin.id },
-      attributes: { exclude: ["password", "refreshToken"] },
-    });
-
-    if (!updatedAdmin) {
-      throw new ApiError(404, "Failed to retrieve updated admin data");
-    }
-
-    // Respond with success and updated admin details
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, updatedAdmin, "Admin profile updated successfully")
+    if (req.admin.image) {
+      const fullOldImagePath = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "profile",
+        path.basename(req.admin.image)
       );
-  } catch (error) {
-    console.error("Error updating admin profile:", error);
-    if (error instanceof ApiError) {
-      res.status(error.statusCode).json({
-        success: false,
-        message: error.message,
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
+      await unlinkAsync(fullOldImagePath);
     }
   }
+
+  const admin = await Admin.findByPk(id);
+
+  if (!admin) {
+    throw new ApiError(404, "Admin not found");
+  }
+
+  if (email) {
+    const existingAdmin = await Admin.findOne({
+      where: { email: email.toLowerCase() },
+      attributes: ["id"],
+    });
+
+    if (existingAdmin && existingAdmin.id !== id) {
+      throw new ApiError(400, "Email already exists");
+    }
+  }
+
+  if (name) admin.name = name.toLowerCase();
+  if (email) admin.email = email.toLowerCase();
+  if (number) admin.number = number;
+  if (imagePath) admin.image = imagePath;
+
+  await admin.save();
+
+  const updatedAdmin = await Admin.findOne({
+    where: { id: admin.id },
+    attributes: { exclude: ["password", "refreshToken"] },
+  });
+
+  if (!updatedAdmin) {
+    throw new ApiError(404, "Failed to retrieve updated admin data");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedAdmin, "Admin profile updated successfully"));
 });
 
 export {
