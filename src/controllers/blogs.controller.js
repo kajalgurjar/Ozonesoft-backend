@@ -2,7 +2,7 @@ import { db } from "../db/db.config.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-const BlogList = db.blogsData;
+const BlogList = db.blogData;
 
 const postBlogsData = async (req, res) => {
   try {
