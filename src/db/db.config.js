@@ -1,35 +1,22 @@
+import { sequelize } from "./admindb.js";
 import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-import contactUsModel from "../models/contactUs.model.js";
 import BannerModel from "../models/banner.model.js";
 import blogsModel from "../models/blogs.model.js";
-import newslatterModel from "../models/newslatter.model.js";
-import adminModel from "../models/admin.model.js";
-dotenv.config();
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "mysql",
-  }
-);
-
-console.log("dbName", process.env.DB_NAME);
-
+import contactUsModel from "../models/contactUs.model.js";
+import newsLetterModel from "../models/newsLetter.model.js";
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-
 // Models-table
-db.contactData = contactUsModel(sequelize, Sequelize);
 db.bannerData = BannerModel(sequelize, Sequelize);
-db.blogsData = blogsModel(sequelize,Sequelize);
-db.newslatterData = newslatterModel(sequelize, Sequelize);
-db.adminData = adminModel(sequelize, Sequelize);
-// db.getHomeScreenData = homescreenModel(sequelize, Sequelize);
-
+db.blogData = blogsModel(sequelize, Sequelize);
+db.contactData = contactUsModel(sequelize, Sequelize);
+db.newsLetterData = newsLetterModel(sequelize, Sequelize);
 export { db };
+
+
+
+
+
+
+

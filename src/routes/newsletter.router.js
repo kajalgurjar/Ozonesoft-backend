@@ -3,7 +3,7 @@ import {
   postNewsLetter,
   getNewsLetter,
   downloadNewsLetter,
-} from  "../controllers/newslatter.controller.js";
+} from  "../controllers/newsletter.controller.js";
 
 import { verifyJWT } from "../middleware/auth.middleware.js";
 

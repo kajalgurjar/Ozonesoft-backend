@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import ExcelJS from "exceljs";
 
-const NewsLetter = db.newslatterData;
+const NewsLetter = db.newsLetterData;
 
 const postNewsLetter = asyncHandler(async (req, res) => {
   const { email } = req.body;
